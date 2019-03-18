@@ -24,5 +24,12 @@ urlpatterns = [
 	url(r'^admin/', admin.site.urls),
 	url(r'^$',views.singIn),
 	url(r'^postsign/',views.postsign),
-    path('', include('condition.urls')),
+	url(r'^logout/',views.logout,name="log"),
+	url(r'^signup/',views.signUp,name='signup'),
+    url(r'^postsignup/',views.postsignup,name='postsignup'),
+	url(r'^create/',views.create,name='create'),
+    url(r'^post_create/',views.post_create,name='post_create'),
+	url(r'^check/',views.check,name='check'),
+    url(r'^post_check/',views.post_check,name='post_check'),
+	path('', include('condition.urls'))
 ]

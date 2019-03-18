@@ -12,12 +12,11 @@
 </head>
 <body>
 <div>
-
 <button type="button" onclick="location.href='{% url 'log' %}'">Logout</button>
-    </div>
+</div>
 Welcome {{e}}
 <br><br>
-<button type="button" onclick="location.href='{% url 'create' %}'">Create Report</button>
-<button type="button" onclick="location.href='{% url 'post_check' %}'">Check Report</button>
+Temperature : {{t}}<br>
+Ph: {{p}}<br>
 </body>
 </html>

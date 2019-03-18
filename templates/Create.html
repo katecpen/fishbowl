@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign</title>
+<style>
+        div{
+        position : absolute;
+        right : 10px;
+        top : 5px
+        }
+    </style>
+</head>
+<body>
+<div>
+
+<button type="button" onclick="location.href='{% url 'log' %}'">Logout</button>
+    </div>
+<H2>Create Daily Progress Report</H2>
+<form action="/post_create/" method="post">
+    {% csrf_token %}
+    Temperature :
+    <input type="text" name="temp" required><br><br>
+    PH:
+    <input type="text" name="ph" required></textarea>
+    <br><br>
+    <input type="submit" value="Submit">
+
+</form>
+</body>
+</html>
