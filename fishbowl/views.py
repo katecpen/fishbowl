@@ -1,7 +1,9 @@
 from django.shortcuts import render 
 from django.contrib import auth    #for log out
 import pyrebase 
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.http import JsonResponse
 
 config = {
 	'apiKey': "AIzaSyAhaOe24nDVf_6PRgjfffu1PwQss2QI3I4",
@@ -98,3 +100,21 @@ def post_check(request):
     name = database.child('users').child(a).child('details').child('name').get().val()
 
     return render(request,'post_check.html',{'t':temp,'p':ph,'e':name})
+
+def fetch_data(request):
+	email="yunzhuyang97@yeah.net"
+	passw ="333666"
+	user = auth.sign_in_with_email_and_password(email,passw)
+	a = user['localId']
+	print(a)
+	ph=database.child('users').child(a).child('reports').child('ph').get().val()
+	temp=database.child('users').child(a).child('reports').child('temperature').get().val()
+    
+	
+	data = {
+        "temperature":temp,
+        'ph':ph
+    }
+	
+	return JsonResponse(data)
+    

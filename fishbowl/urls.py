@@ -29,7 +29,8 @@ urlpatterns = [
     url(r'^postsignup/',views.postsignup,name='postsignup'),
 	url(r'^create/',views.create,name='create'),
     url(r'^post_create/',views.post_create,name='post_create'),
-	url(r'^check/',views.check,name='check'),
+	#url(r'^check/',views.check,name='check'),
     url(r'^post_check/',views.post_check,name='post_check'),
-	path('', include('condition.urls'))
+	url(r'^fetch_data/',views.fetch_data),
+	#path('', include('condition.urls'))
 ]

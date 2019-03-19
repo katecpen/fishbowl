@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'condition',# add the app
+	
 	'rest_framework', #enable test framework
 	'pyrebase'
 ]
