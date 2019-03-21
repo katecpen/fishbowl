@@ -20,12 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')lafnu7)&4w=pn2&fdh17kg)w68b(bx2$$2yy%!7%892rk^rvq'
+secret_key_path = f'{BASE_DIR}/secret_key.txt'
+if os.path.exists(secret_key_path):
+    with open(secret_key_path) as f:
+        SECRET_KEY = f.read()
+else:
+    import secrets
+    chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+    SECRET_KEY = ''.join([chars[secrets.randbelow(len(chars))] for _ in range(50)])
+    with open(secret_key_path, 'w') as f:
+        f.write(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -102,6 +111,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ADMINS = [('Harpaul', 'harpaul.gill9@gmail.com')]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -115,6 +126,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+SERVER_EMAIL = 'django@fishbowl.com'
 
 
 # Static files (CSS, JavaScript, Images)

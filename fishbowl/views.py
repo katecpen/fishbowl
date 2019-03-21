@@ -4,6 +4,8 @@ import pyrebase
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
+from itertools import islice
+from objdict import ObjDict
 
 config = {
 	'apiKey': "AIzaSyAhaOe24nDVf_6PRgjfffu1PwQss2QI3I4",
@@ -117,4 +119,23 @@ def fetch_data(request):
     }
 	
 	return JsonResponse(data)
+
+
+def temp(request):
+	temps = database.child("temp").get()
+	temps = islice(temps.each(),10)
+	data = []
+	for temp in temps:
+	    print(temp.val())
+	    data.append(temp.val())
+	return JsonResponse(data, safe=False)
+
+def ph(request):
+	phs = database.child("ph").get()
+	phs = islice(phs.each(),10)
+	data = []
+	for ph in phs:
+	    print(ph.val())
+	    data.append(ph.val())
+	return JsonResponse(data, safe=False)
     

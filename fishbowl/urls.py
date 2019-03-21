@@ -32,5 +32,8 @@ urlpatterns = [
 	#url(r'^check/',views.check,name='check'),
     url(r'^post_check/',views.post_check,name='post_check'),
 	url(r'^fetch_data/',views.fetch_data),
+    url(r'^temp/',views.temp),
+    url(r'^ph/',views.ph),
+    #url(r'^feed/',views.feed),
 	#path('', include('condition.urls'))
 ]
