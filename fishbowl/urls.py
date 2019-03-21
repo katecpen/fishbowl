@@ -34,6 +34,6 @@ urlpatterns = [
 	url(r'^fetch_data/',views.fetch_data),
     url(r'^temp/',views.temp),
     url(r'^ph/',views.ph),
-    #url(r'^feed/',views.feed),
+    url(r'^feed/',views.feed),
 	#path('', include('condition.urls'))
 ]

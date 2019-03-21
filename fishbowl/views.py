@@ -138,4 +138,9 @@ def ph(request):
 	    print(ph.val())
 	    data.append(ph.val())
 	return JsonResponse(data, safe=False)
+
+def feed(request):
+	database.child("feed").set(True)
+	data = {"response": "success"}
+	return JsonResponse(data, safe=False)
     
