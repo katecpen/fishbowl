@@ -1,0 +1,9 @@
+
+django = "*"
+djangorestframework = "*"
+pyrebase = "*"
+objdict = "*"
+twython = "*"
+pillow = "*"
+requests = "*"
+
