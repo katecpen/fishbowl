@@ -36,5 +36,6 @@ urlpatterns = [
     url(r'^ph/',views.ph),
     url(r'^feed/',views.feed),
     url(r'^tweet/',views.tweet_something),
+    url(r'^stream/',views.stream),
 	#path('', include('condition.urls'))
 ]

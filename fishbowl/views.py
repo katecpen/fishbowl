@@ -21,6 +21,8 @@ twitter = Twython(
 from PIL import Image
 import requests
 from io import BytesIO
+import socket
+import json
 
 config = {
     "apiKey": "AIzaSyAhaOe24nDVf_6PRgjfffu1PwQss2QI3I4",
@@ -36,6 +38,9 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 database = firebase.database()
 storage = firebase.storage()
+
+TCP_IP = 'localhost'
+TCP_PORT = 5001
 
 # Routing functions
 def singIn(request):
@@ -225,10 +230,33 @@ def tweet_something(request):
         data = {"response": "fail" + str(e)}
         return JsonResponse(data, safe=False)
 
+def stream(request):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((TCP_IP, TCP_PORT))
+    s.listen(True)
+    conn, addr = s.accept()
+
+    data = recvall(conn)
+    print(data)
+    s.close()
+    json_data = json.dumps(str(data))
+    return JsonResponse(json_data, safe=False)
+
 # Normal functions
 def tweet(msg, img):
     response = twitter.upload_media(media=img)
     media_id = [response['media_id']]
     twitter.update_status(status=msg, media_ids=media_id)
     print("Tweeted: %s" % msg)
+
+def recvall(sock):
+    BUFF_SIZE = 4096 # 4 KiB
+    data = b''
+    while True:
+        part = sock.recv(BUFF_SIZE)
+        data += part
+        if len(part) < BUFF_SIZE:
+            # either 0 or end of data
+            break
+    return data    
 
