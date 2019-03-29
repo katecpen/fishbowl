@@ -38,7 +38,7 @@ auth = firebase.auth()
 database = firebase.database()
 storage = firebase.storage()
 
-TCP_IP = 'localhost'
+TCP_IP = '0.0.0.0'
 TCP_PORT = 5001
 
 # Routing functions
