@@ -6,7 +6,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from itertools import islice
-from objdict import ObjDict
 
 # twitter stuff
 import os
