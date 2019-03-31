@@ -11,12 +11,17 @@ import struct
 # twitter stuff
 import os
 from twython import Twython
-from .t import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET
-twitter = Twython(
+import base64
+import uuid
+from .t import (
+    ACCESS_TOKEN_KEY,
+    ACCESS_TOKEN_SECRET,
     CONSUMER_KEY,
     CONSUMER_SECRET,
-    ACCESS_TOKEN_KEY,
-    ACCESS_TOKEN_SECRET
+)
+
+twitter = Twython(
+    CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET
 )
 from PIL import Image
 import requests
@@ -39,7 +44,7 @@ auth = firebase.auth()
 database = firebase.database()
 storage = firebase.storage()
 
-TCP_IP = '0.0.0.0'
+TCP_IP = "0.0.0.0"
 TCP_PORT = 5001
 
 # Routing functions
@@ -206,29 +211,38 @@ def feed(request):
     data = {"response": "success"}
     return JsonResponse(data, safe=False)
 
+
 @csrf_exempt
 def tweet_something(request):
     id = request.POST.get("id")
     msg = request.POST.get("msg")
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, '../fish.png')
+    # id = "-LbL-SMDhQOyYbbBpOSM"
+    # dirname = os.path.dirname(__file__)
+    # filename = os.path.join(dirname, '../fish.png')
     try:
-        # TODO: download the image that has the same id as id
-        storage.child("images/fish.png").download(filename)
-        img = open(filename, 'rb')
-
+        # storage.child("images/fish.png").download(filename)
+        # img = open(filename, 'rb')
         # url = storage.child("images/fish.png").get_url(None)
         # image = Image.open(requests.get(url, stream=True).raw)
         # image.show()
 
+        print(id)
+        base64str = database.child("/images/" + id + "/data").get().val()
+        # print(base64str)
+        imgdata = base64.b64decode(base64str)
+        unique_filename = str(uuid.uuid4())
+        with open(unique_filename, 'wb') as f:
+            f.write(imgdata)
+        img = open(unique_filename, 'rb')
         tweet(msg, img)
-        os.remove(filename);
+        os.remove(unique_filename);
 
         data = {"response": "success"}
         return JsonResponse(data, safe=False)
     except Exception as e:
-        data = {"response": "fail" + str(e)}
+        data = {"response": "fail: " + str(e)}
         return JsonResponse(data, safe=False)
+
 
 def stream(request):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -241,29 +255,31 @@ def stream(request):
     json_data = json.dumps(str(data))
     return JsonResponse(json_data, safe=False)
 
+
 # Normal functions
 def tweet(msg, img):
     response = twitter.upload_media(media=img)
-    media_id = [response['media_id']]
+    media_id = [response["media_id"]]
     twitter.update_status(status=msg, media_ids=media_id)
     print("Tweeted: %s" % msg)
+
 
 def recv_msg(sock):
     # Read message length and unpack it into an integer
     raw_msglen = recvall(sock, 4)
     if not raw_msglen:
         return None
-    msglen = struct.unpack('>I', raw_msglen)[0]
+    msglen = struct.unpack(">I", raw_msglen)[0]
     # Read the message data
     return recvall(sock, msglen)
 
+
 def recvall(sock, n):
     # Helper function to recv n bytes or return None if EOF is hit
-    data = b''
+    data = b""
     while len(data) < n:
         packet = sock.recv(n - len(data))
         if not packet:
             return None
         data += packet
-    return data   
-
+    return data
