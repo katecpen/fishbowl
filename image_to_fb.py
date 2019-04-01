@@ -3,6 +3,8 @@ import base64
 import pyrebase
 from PIL import Image
 from io import BytesIO
+from datetime import datetime
+
 
 config = {
     "apiKey": "AIzaSyAhaOe24nDVf_6PRgjfffu1PwQss2QI3I4",
@@ -22,15 +24,15 @@ ENCODING = "utf-8"
 # https://stackoverflow.com/a/13957446
 # i guess our snapshots are small (< 10Mb) so i only implemented the base64 version
 def store_image_to_fb():
-    store_base64_image()
+    # store_base64_image("fish.png")
+    # store_base64_image("fish2.jpeg")
+    store_base64_image("fish3.jpeg")
 
 
-def store_base64_image():
+def store_base64_image(name):
     print("store base64 image")
     dirname = os.path.dirname(__file__)
-    # filename = os.path.join(dirname, "./fish2.jpeg")
-    # filename = os.path.join(dirname, "./fish3.jpeg")
-    filename = os.path.join(dirname, "./fish.png")
+    filename = os.path.join(dirname, name)
     try:
         image = Image.open(filename)
         # image.show()
@@ -41,10 +43,18 @@ def store_base64_image():
         base64_string = img_bytes.decode(ENCODING)
         # print(img_str)
 
-        new_img_ref = database.child("images").push({"id": "", "data": ""})
+        upload_time = datetime.utcnow().isoformat()
+        # print(upload_time)
+
+        new_img_ref = database.child("images").push(
+            {"id": "", "data": "", "timestamp": ""}
+        )
         id = new_img_ref["name"]
         # print(id)
-        database.child("images").child(id).update({"id": id, "data": base64_string})
+
+        database.child("images").child(id).update(
+            {"id": id, "data": base64_string, "timestamp": upload_time}
+        )
 
     except Exception as e:
         print(str(e))
