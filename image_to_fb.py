@@ -17,37 +17,41 @@ firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 storage = firebase.storage()
 
-ENCODING = 'utf-8'
+ENCODING = "utf-8"
 
 # https://stackoverflow.com/a/13957446
 # i guess our snapshots are small (< 10Mb) so i only implemented the base64 version
 def store_image_to_fb():
     store_base64_image()
 
+
 def store_base64_image():
     print("store base64 image")
     dirname = os.path.dirname(__file__)
+    # filename = os.path.join(dirname, "./fish2.jpeg")
+    # filename = os.path.join(dirname, "./fish3.jpeg")
     filename = os.path.join(dirname, "./fish.png")
     try:
         image = Image.open(filename)
         # image.show()
-        rgb_im = image.convert('RGB')
+        rgb_im = image.convert("RGB")
         img_buffer = BytesIO()
         rgb_im.save(img_buffer, format="JPEG")
         img_bytes = base64.b64encode(img_buffer.getvalue())
         base64_string = img_bytes.decode(ENCODING)
         # print(img_str)
 
-        imgs_ref = database.child('images')
-        imgs_ref.push({
-            'data': base64_string,
-        })
+        new_img_ref = database.child("images").push({"id": "", "data": ""})
+        id = new_img_ref["name"]
+        # print(id)
+        database.child("images").child(id).update({"id": id, "data": base64_string})
 
     except Exception as e:
         print(str(e))
 
     # open and encode image as base64 string
     # push to firebase realtime database
+
 
 def store_binary_image():
     print("store binary image")
