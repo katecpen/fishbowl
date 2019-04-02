@@ -13,6 +13,7 @@ import os
 from twython import Twython
 import base64
 import uuid
+from datetime import datetime
 from .t import (
     ACCESS_TOKEN_KEY,
     ACCESS_TOKEN_SECRET,
@@ -231,11 +232,11 @@ def tweet_something(request):
         # print(base64str)
         imgdata = base64.b64decode(base64str)
         unique_filename = str(uuid.uuid4())
-        with open(unique_filename, 'wb') as f:
+        with open(unique_filename, "wb") as f:
             f.write(imgdata)
-        img = open(unique_filename, 'rb')
+        img = open(unique_filename, "rb")
         tweet(msg, img)
-        os.remove(unique_filename);
+        os.remove(unique_filename)
 
         data = {"response": "success"}
         return JsonResponse(data, safe=False)
@@ -254,6 +255,30 @@ def stream(request):
     s.close()
     json_data = json.dumps(str(data))
     return JsonResponse(json_data, safe=False)
+
+
+@csrf_exempt
+def snapshot(request):
+    try:
+        base64_string = request.POST.get("data")
+        print(base64_string)
+        upload_time = datetime.utcnow().isoformat()
+        # print(upload_time)
+
+        new_img_ref = database.child("images").push(
+            {"id": "", "data": "", "timestamp": ""}
+        )
+        id = new_img_ref["name"]
+        # print(id)
+
+        database.child("images").child(id).update(
+            {"id": id, "data": base64_string, "timestamp": upload_time}
+        )
+        data = {"response": "success"}
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        data = {"response": "fail: " + str(e)}
+        return JsonResponse(data, safe=False)
 
 
 # Normal functions
