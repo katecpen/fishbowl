@@ -45,7 +45,7 @@ database = firebase.database()
 storage = firebase.storage()
 
 TCP_IP = "0.0.0.0"
-TCP_PORT = 5001
+TCP_PORT = 5000
 
 # Routing functions
 def singIn(request):
