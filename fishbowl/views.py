@@ -217,24 +217,19 @@ def feed(request):
 def tweet_something(request):
     id = request.POST.get("id")
     msg = request.POST.get("msg")
-    # id = "-LbL-SMDhQOyYbbBpOSM"
-    # dirname = os.path.dirname(__file__)
-    # filename = os.path.join(dirname, '../fish.png')
     try:
-        # storage.child("images/fish.png").download(filename)
-        # img = open(filename, 'rb')
-        # url = storage.child("images/fish.png").get_url(None)
-        # image = Image.open(requests.get(url, stream=True).raw)
-        # image.show()
-
+        # fetch base64 string from firebase based on picture id
         print(id)
         base64str = database.child("/images/" + id + "/data").get().val()
-        # print(base64str)
         imgdata = base64.b64decode(base64str)
+
+        # save the image with a unique file name
         unique_filename = str(uuid.uuid4())
         with open(unique_filename, "wb") as f:
             f.write(imgdata)
         img = open(unique_filename, "rb")
+
+        # tweet that image with message and remove it 
         tweet(msg, img)
         os.remove(unique_filename)
 
@@ -260,17 +255,16 @@ def stream(request):
 @csrf_exempt
 def snapshot(request):
     try:
+        # make a new json object with the base64 string, current timestamp, and
+        # picture id
         base64_string = request.POST.get("data")
-        print(base64_string)
         upload_time = datetime.utcnow().isoformat()
-        # print(upload_time)
-
         new_img_ref = database.child("images").push(
             {"id": "", "data": "", "timestamp": ""}
         )
         id = new_img_ref["name"]
-        # print(id)
 
+        # add a new entry to the firebase/images
         database.child("images").child(id).update(
             {"id": id, "data": base64_string, "timestamp": upload_time}
         )
@@ -282,6 +276,8 @@ def snapshot(request):
 
 
 # Normal functions
+
+# send a tweet with a message and an image
 def tweet(msg, img):
     response = twitter.upload_media(media=img)
     media_id = [response["media_id"]]
